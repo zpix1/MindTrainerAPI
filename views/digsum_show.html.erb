@@ -1,0 +1,10 @@
+<p><%=t('trainer_data.graph.page_desc')%></p>
+<%= form_tag(controller: 'trainers', action: 'check',anchor:'wall') do%>
+    <%= submit_tag('Ответить',class:"btn") %>
+        <input type="reset" class="btn" value="Очистить"> <!-- Кнопка для очистки -->
+        <br>
+    <br>
+    <font size="20"><%= @task[:question] %></font> <!-- Здесь показывается вопрос -->
+     <br><%= label_tag(:user_answer, 'Ваш ответ: ') %>
+    <input size="10" type="number" class="form-control anagramtext" id="user_answer" name="user_answer"> <!-- Поле для ответа пользователя -->
+<% end %>
