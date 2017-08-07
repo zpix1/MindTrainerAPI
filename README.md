@@ -1,5 +1,16 @@
 This README is created only for russian speaking people. If you want to use this api to create a mindtrainer, but you don't speak russian, you could send an email (zpix-dev@list.ru)
 # О создании тренажера для beta.mindtrainer.ru
+### Установка api
+Обертка использует фреймворк Sinatra, написанный на языке ruby.
+#### Windows
+1. Установите [Ruby](https://rubyinstaller.org/).
+2. Скачайте [репозиторий](https://github.com/zpix1/MindTrainerAPI/archive/master.zip) и распакуйте его в какую-нибудь папку, где вы будете разрабатывать тренажер.
+3. Откройте командную строку Windows в папке с репозиторием.
+4. Установите bundler командой
+    `gem install bundler`
+5. Установите sinatra командой
+    `bundle install`
+
 ### Общее
 Новая версия MindTrainer'a поддерживает тренажеры на разных языках программирования
 Каждый  тренажер состоит из 3 частей:

@@ -18,7 +18,7 @@ get '/' do # На show
     erb :'show.html', layout: :'layout.html' # Показываем страницу
 end
 
-post '/check' do
+post '/check' do # на check
     @task = JSON.parse session[:task] # Получаем сохраненную задачу
     cmd = "timeout 2 python task.py check '#{params['user_answer']}' '#{@task['answer']}' '#{@task['seed'] % 30000}'" # Строка для проверки
     ans = `#{cmd}`
