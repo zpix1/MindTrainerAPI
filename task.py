@@ -1,3 +1,4 @@
+#! coding: utf-8
 import sys # Для доступа к аргументам командной строки
 import json # Для парсинга JSON
 from random import randint,seed # Для генерации цифр
