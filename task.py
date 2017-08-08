@@ -5,9 +5,9 @@ from random import randint,seed # Для генерации цифр
 
 mode = sys.argv[1] # Получем режим
 if mode == 'generate': # Если надо сгенерировать задачу
-    # Тут из параметров убирается косая черта, так как в Windows двойные кавычки требуют экранирования, а в Linux нет.
-    config = json.loads(sys.argv[2].replace('\\','')) # Получаем конфигурацию
-    s = int(sys.argv[3]) # Получем зерно для генератора случайных чисел
+    # Тут из параметров убирается косая черта, так как в Windows двойные кавычки требуют экранирования, а в Linux нет. А еще кавычки в Windows убираются, а в Linux нет.
+    config = json.loads(sys.argv[2].replace('\\','').replace('\'','')) # Получаем конфигурацию
+    s = int(sys.argv[3].replace('\'','')) # Получем зерно для генератора случайных чисел
     seed(s) # Используем это зерно
     maxval = config["maxval"]
     a = randint(0, maxval) # Генерируем цифры для сложения
@@ -16,8 +16,8 @@ if mode == 'generate': # Если надо сгенерировать задач
     answer = str(a+b) # Ответ
     print(json.dumps({'question':question,'answer':answer}))
 elif mode == 'check': # Если надо проверить
-    user_answer = int(sys.argv[2].replace('\\','')) # Считываем ответ пользователя и настоящий ответ
-    answer = int(sys.argv[3].replace('\\',''))
+    user_answer = int(sys.argv[2].replace('\\','').replace('\'','')) # Считываем ответ пользователя и настоящий ответ
+    answer = int(sys.argv[3].replace('\\','').replace('\'',''))
     if user_answer == answer: # Если правильно, то пишем true, иначе false
         print('true')
     else:
