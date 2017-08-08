@@ -1,6 +1,5 @@
 require 'sinatra' # Сервер
 require 'json' # Парсинг JSON
-require 'byebug'
 enable :sessions # Включаем cookies
 
 PROGRAM = 'python task.py' # Измените на свою
@@ -12,8 +11,8 @@ get '/' do # На show
     @task['config'] = app_config["config"]
     @task['seed'] = rand(1..10000)
     # Генерируем строку для запуска
-    cmd = "#{app_config['command']} generate '#{JSON.generate(@task['config'])}' '#{@task['seed'] % 30000}'"
-    byebug
+    cmd = "#{app_config['command']} generate '#{JSON.generate(@task['config']).gsub(/\"/,"\\\"")}' '#{@task['seed'] % 30000}'"
+    print(cmd)
     ans = `#{cmd}` # Получаем ответ
     result = JSON.parse ans # Парсим его
 
