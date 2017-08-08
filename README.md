@@ -1,23 +1,44 @@
 This README is created only for russian speaking people. If you want to use this api to create a mindtrainer, but you don't speak russian, you could send an email (zpix-dev@list.ru)
 # О создании тренажера для beta.mindtrainer.ru
-### Установка api
-Обертка использует фреймворк Sinatra, написанный на языке ruby.
-#### Windows
-1. Установите [Ruby](https://rubyinstaller.org/).
+### Об API
+Обертка использует фреймворк Sinatra, написанный на языке Ruby. Также используется ядро тренажера на языке Python. Если вы собираетесь использовать другой язык программирования, то можете не ставить Python (пропустите шаг 6 при установке API).
+#### Установка для Windows
+1. Установите [Ruby-2.4](https://rubyinstaller.org/downloads/),  не снимайте галочки при установке, но после установки снимите галочку
 2. Скачайте [репозиторий](https://github.com/zpix1/MindTrainerAPI/archive/master.zip) и распакуйте его в какую-нибудь папку, где вы будете разрабатывать тренажер.
 3. Откройте командную строку Windows в папке с репозиторием.
 4. Установите bundler командой
     `gem install bundler`
 5. Установите sinatra командой
     `bundle install`
+6. Установите [Python-3.6](https://www.python.org/downloads/). Не забудьте поставить галочку `Add Python 3.6 to PATH`.
 
+#### Установка для Linux
+1. Установите ruby своим пакетным менеджером (`apt-get install ruby` для Debian, Ubuntu)
+2. Скачайте [репозиторий](https://github.com/zpix1/MindTrainerAPI/archive/master.zip) и распакуйте его в какую-нибудь папку, где вы будете разрабатывать тренажер.
+3. Откройте командную строку в этой папке
+4. Установите bundler командой
+    `gem install bundler`
+5. Установите sinatra командой
+    `bundle install`
+6. Python 3 обычно уже установлен на всех популярных дистрибутивах Linux
+
+### Обзор API
+Чтобы запустить сервер, запустите файл run.bat для Windows или run.sh для Linux
+
+Вы можете открыть сайт в браузере по адресу
+    `http://localhost:4567`
+
+API состоит из:
+1. Файлов интерфейса, располагающихся в папке `views`,  а именно check.html.erb, show.html.erb и layout.html.erb. Вам потребуется менять только show и check.
+2. Файла сервера, менять его вам не потребуется
+3. Конфигурации тренажера `config.json`, там обязательно должны быть заданы значения к ключам `command`,`config` и `config_template`, команда для запуска ядра, конфигурация тренажера и шаблон настроек, форматы которых описаны ниже, соответственно.
 ### Общее
 Новая версия MindTrainer'a поддерживает тренажеры на разных языках программирования
 Каждый  тренажер состоит из 3 частей:
 
 1. Ядро - консольная программа, обеспечивающая проверку и генерацию задачи.
 2. Интерфейс - визуальная часть тренажера, набор из CSS, JavaScript и HTML, который показывает задачу и предоставляет удобные инструменты для её решения.
-3. Ник  и шаблон настроек 
+3. Ник  и шаблон настроек.
 ### Техническая часть
 #### Ядро
 Ядро может быть написано на любом языке программирования, компилятор или интерпретатор которого есть на сервере или который можно туда поставить, но вот список рекомендуемых языков: C, C++, Python, Ruby, PHP, Perl
@@ -45,7 +66,7 @@ This README is created only for russian speaking people. If you want to use this
 
 
 ### Пример
-Напишем тренажер сложения цифр
+Напишем тренажер сложения цифр.
 
 Определимся с ником. Пусть будет `digsum`.
 
@@ -62,7 +83,7 @@ This README is created only for russian speaking people. If you want to use this
 ]
 ```
 
-Напишем ядро на языке Python
+Напишем ядро на языке Python (`task.py` в API)
 ``` Python
 import sys # Для доступа к аргументам командной строки
 import json # Для парсинга JSON
@@ -88,26 +109,29 @@ elif mode == 'check': # Если надо проверить
         print('false')
 ```
 Напишем интерфейс, будет 2 файла - show и check
-Тут используется технология erb, знать ее не обязательно, просто игнорируйте текст внутри `<% %>`
+
+Тут используется технология erb, знать ее не обязательно, скобочки вида `<%= %>` просто вставляют строку написанную в них в код. (как `<?php ?>` в PHP)
+
+`@task['question']` - ровно то, что выдало ядро в вопросе.
 
 show.html.erb
 ``` HTML
-<%= form_tag(controller: 'trainers', action: 'check') do%>
-    <%= submit_tag('Ответить',class:"btn") %>
-        <input type="reset" class="btn" value="Очистить"> <!-- Кнопка для очистки -->
-        <br>
-    <br>
-    <font size="20"><%= @task[:question] %></font> <!-- Здесь показывается вопрос -->
-    <%= label_tag(:user_answer, 'Ваш ответ: ') %> 
-    <input size="10" type="number" class="form-control anagramtext" id="user_answer" name="user_answer"> <!-- Поле для ответа пользователя -->
-<% end %>
+<form action="/check" accept-charset="UTF-8" method="post">
+<font size="20"><%= @task['question'] %></font>
+<br>
+<input size="10" type="number" class="form-control" id="user_answer" name="user_answer"> 
+<input type="submit" name="commit" value="Ответить" class="btn" data-disable-with="Ответить" />
+</form>
 ```
 
 Этот файл покажется только если ответ пользователя неверный
 
+`@task['answer']` - ровно то, что выдало ядро в ответе.
+
 check.html.erb
 ``` HTML
-Вы ошиблись! Правильный ответ: <%= @task[:answer] %>
+Вы ошиблись! Правильный ответ: <%= @task['answer'] %>
+<a href='/'>Далее</a>
 ```
 
 Все! Осталось добавить эти файлы в систему, это займет совсем немного времени.
