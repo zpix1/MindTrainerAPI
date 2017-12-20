@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Error
+        </title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+        <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        </link>
+    </head>
+    <body>
+        <div class="container">
+            
+            <div class="well text-center" id='twall'>
+                <p>Тренажер аварийно завершился (<%= @error[:code] %>)!<br> Текущий вывод stdout (то, откуда берется ответ):</p>
+                <textarea readonly><%= @error[:stdout] %></textarea><br>
+                <p>Текущий вывод stderr (то, куда программа выдает ошибки):</p>
+                <textarea readonly><%= @error[:stderr] %></textarea><br>
+                <%= if @error.empty? then  "(Нет вывода)" end %>
+            </div>
+            <br>
+            </br>
+        </div>
+        <script src="/vendor/jquery.min.js"></script>
+
+         <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+    </body>
+</html>
