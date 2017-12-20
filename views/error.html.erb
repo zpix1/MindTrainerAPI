@@ -11,8 +11,11 @@
     <body>
         <div class="container">
             <div class="well text-center" id="twall">
+                <% if @error[:type] == 'trainer' %>
                 <p>
-                    Тренажер аварийно завершился (<%= @error[:code] %>)!
+                    Тренажер аварийно завершился (<%= @error[:code] %>)!<br>
+                    Команда, которая создает проблему:<br>
+                    <textarea cols="100" readonly="" rows="3"><%= @error[:cmd] %></textarea>
                     <br>
                         Текущий вывод stdout (то, откуда берется ответ):
                     </br>
@@ -28,6 +31,11 @@
                         <%= if @error.empty? then  "(Нет вывода)" end %>
                     </br>
                 </br>
+                <% elsif @error[:type] == 'session' %>
+                <p>Задача не найдена в cookies. Обычно она возникает после перезапуска сервера, перейдите <a href=/>на страницу генерации</a></p>
+                <% elsif @error[:type] == 'files' %>
+                <p>Один из необходимых для работы тренажера файлов не найден. Файл - <%= @error[:file] %>.<br>Возможно, вы назвали его по-другому или расположили в другом месте.</p>
+                <% end %>
             </div>
             <br>
             </br>

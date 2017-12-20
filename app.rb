@@ -4,8 +4,24 @@ require 'byebug'
 require 'open3'
 enable :sessions # Включаем cookies
 
+# Смотрим файлы
+def checkfiles
+    
+    files = ['config.json','show.html.erb','check.html.erb']
+    files.each do |f|
+        unless File.file?("trainer/#{f}")
+            @error = { file: f, type: 'files'}
+            erb :'error.html'
+            return @error
+        end
+    end
+    return false
+end
 
 get '/' do # На show
+    if cf = checkfiles()
+        return erb :'error.html'
+    end
     app_config = JSON.parse(open('trainer/config.json').read())
 
     @task = {} # Задаем сид и конфиг задачи
@@ -22,20 +38,23 @@ get '/' do # На show
     begin
         result = JSON.parse ans # Парсим его
     rescue
-        @error = { code: status, stdout: ans, stderr: stderr }
-        erb :'error.html'
-    else
-        @task['question'] = result['question'] # Раскладываем
-        @task['answer'] = result['answer']
-
-        session[:task] = JSON.generate @task # Запоминаем задачу
-        erb :'../trainer/show.html', layout: :'layout.html' # Показываем страницу
+        @error = { code: status, stdout: ans, stderr: stderr , cmd: cmd, type: 'trainer'}
+        return erb :'error.html'
     end
+    @task['question'] = result['question'] # Раскладываем
+    @task['answer'] = result['answer']
+
+    session[:task] = JSON.generate @task # Запоминаем задачу
+    erb :'../trainer/show.html', layout: :'layout.html' # Показываем страницу
 end
 
 post '/check' do # на check
+    checkfiles()
     app_config = JSON.parse(open('trainer/config.json').read())
-
+    if session[:task].nil?
+        @error = {type: 'session'}
+        return erb :'error.html'
+    end
     @task = JSON.parse session[:task] # Получаем сохраненную задачу
     @task['mode'] = 'check'
     @task['user_answer'] = params['user_answer']
@@ -47,7 +66,7 @@ post '/check' do # на check
     begin
         result = JSON.parse ans # Парсим его
     rescue
-        @error = { code: status, stdout: ans, stderr: stderr }
+        @error = { code: status, stdout: ans, stderr: stderr, cmd: cmd, type: 'trainer'}
         erb :'error.html'
     else
         if ans.chomp == 'false' # Если юзер ошибся
@@ -56,4 +75,5 @@ post '/check' do # на check
             redirect to('/') # Следующая задача
         end
     end
+    # end
 end
