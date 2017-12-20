@@ -31,21 +31,26 @@ get '/' do # На show
     @task['mode'] = 'generate'
     cmd = "cd trainer; #{app_config['command']} '#{JSON.generate(@task)}'"
     print(cmd)
-    # byebug
     ans, stderr, status = Open3.capture3(cmd)
-    # byebug
-    # ans = `#{cmd}` # Получаем ответ
+
     begin
-        result = JSON.parse ans # Парсим его
+        result = JSON.parse(ans)
+        
     rescue
         @error = { code: status, stdout: ans, stderr: stderr , cmd: cmd, type: 'trainer'}
         return erb :'error.html'
     end
-    @task['question'] = result['question'] # Раскладываем
+
+    unless result.has_key?('question') and result.has_key?('answer')
+        @error = { type: 'json_error', json: ans}
+        return erb :'error.html'
+    end
+
+    @task['question'] = result['question']
     @task['answer'] = result['answer']
 
-    session[:task] = JSON.generate @task # Запоминаем задачу
-    erb :'../trainer/show.html', layout: :'layout.html' # Показываем страницу
+    session[:task] = JSON.generate @task
+    erb :'../trainer/show.html', layout: :'layout.html'
 end
 
 post '/check' do # на check

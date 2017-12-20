@@ -9,6 +9,7 @@
         </link>
     </head>
     <body>
+        <%= erb :'header.html' %>
         <div class="container">
             <div class="well text-center" id="twall">
                 <% if @error[:type] == 'trainer' %>
@@ -35,6 +36,8 @@
                 <p>Задача не найдена в cookies. Обычно она возникает после перезапуска сервера, перейдите <a href=/>на страницу генерации</a></p>
                 <% elsif @error[:type] == 'files' %>
                 <p>Один из необходимых для работы тренажера файлов не найден. Файл - <%= @error[:file] %>.<br>Возможно, вы назвали его по-другому или расположили в другом месте.</p>
+                <% elsif @error[:type] == 'json_error' %>
+                <p>Ошибка в формате json. Помните, что json должен иметь ключи question и answer.<br><textarea cols="60" readonly="" rows="10"><%= @error[:json] %></textarea>
                 <% end %>
             </div>
             <br>
