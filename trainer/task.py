@@ -4,7 +4,7 @@ import json
 from random import randint, seed
 
 # Загружаем информацию
-data = json.loads(sys.argv[2].replace('\\', '').replace('\'', ''))
+data = json.loads(sys.argv[1].replace('\\', '').replace('\'', ''))
 
 # Тут из параметров убирается косая черта, так как в Windows двойные
 # кавычки требуют экранирования, а в Linux нет. А еще кавычки в Windows
@@ -27,7 +27,7 @@ if mode == 'generate':
     question = str(a) + " + " + str(b) + " = ?"
     answer = str(a + b)
     print(json.dumps({'question': question, 'answer': answer}))
-    
+
 elif mode == 'check':
 
     user_answer = data['user_answer']

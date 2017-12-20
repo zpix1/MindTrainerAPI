@@ -21,7 +21,7 @@ get '/' do # На show
     # ans = `#{cmd}` # Получаем ответ
     begin
         result = JSON.parse ans # Парсим его
-    rescue JSON::ParserError
+    rescue
         @error = { code: status, stdout: ans, stderr: stderr }
         erb :'error.html'
     else
@@ -34,17 +34,26 @@ get '/' do # На show
 end
 
 post '/check' do # на check
-    app_config = JSON.parse(open('config.json').read())
+    app_config = JSON.parse(open('trainer/config.json').read())
 
     @task = JSON.parse session[:task] # Получаем сохраненную задачу
     @task['mode'] = 'check'
     @task['user_answer'] = params['user_answer']
-    cmd = "cd trainer; #{app_config['command']} #{JSON.generate(@task)}" # Строка для проверки
-    
-    ans = `#{cmd}`
-    if ans.chomp == 'false' # Если юзер ошибся
-        erb :'../trainer/check.html', layout: :'layout.html' # Показываем страницу с правильным ответом
+    cmd = "cd trainer; #{app_config['command']} '#{JSON.generate(@task)}'" # Строка для проверки
+    # byebug
+    puts cmd
+
+    ans, stderr, status = Open3.capture3(cmd)
+    begin
+        result = JSON.parse ans # Парсим его
+    rescue
+        @error = { code: status, stdout: ans, stderr: stderr }
+        erb :'error.html'
     else
-        redirect to('/') # Следующая задача
+        if ans.chomp == 'false' # Если юзер ошибся
+            erb :'../trainer/check.html', layout: :'layout.html' # Показываем страницу с правильным ответом
+        else
+            redirect to('/') # Следующая задача
+        end
     end
 end
