@@ -19,7 +19,7 @@ if mode == 'generate':
 
     seed(data['seed'])
 
-    maxval = int(config["maxval"])
+    maxval = int(config["maxval1"])
     gamemode = config["mode"]
     a = randint(0, maxval)
     b = randint(0, maxval)

@@ -1,12 +1,19 @@
 {
-    "command": "python task.py", // Команда для запуска ядра.
+    "command": "./a.out", // Команда для запуска ядра.
     "config_template": [ // Шаблон настроек
         {
-            "nick": "maxval",
+            "nick": "maxval1",
             "type": "int",
             "min": 0,
-            "max": 9,
-            "description": "Максимальное значение цифры"
+            "max": 9000,
+            "description": "Максимальное значение цифры 1"
+        },
+        {
+            "nick": "maxval2",
+            "type": "int",
+            "min": 0,
+            "max": 900,
+            "description": "Максимальное значение цифры 2"
         }, {
             "nick": "mode",
             "type": "select",
