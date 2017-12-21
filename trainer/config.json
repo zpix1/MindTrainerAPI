@@ -1,15 +1,23 @@
-{ 
-    "command":"python task.py", // Команда для запуска ядра. 
-    "config": { // Конфигурация тренажера
-        "maxval":9
-    },
+{
+    "command": "python task.py", // Команда для запуска ядра.
     "config_template": [ // Шаблон настроек
         {
-            "nick":"maxval",
-            "type":"int",
-            "min":0,
-            "max":9,
-            "description":"Максимальное значение цифры"
+            "nick": "maxval",
+            "type": "int",
+            "min": 0,
+            "max": 9,
+            "description": "Максимальное значение цифры"
+        }, {
+            "nick": "mode",
+            "type": "select",
+            "description": "Режим",
+            "options": [{
+                "nick": "plus",
+                "name": "Сложение"
+            }, {
+                "nick": "minus",
+                "name": "Вычитание"
+            }]
         }
     ]
 }

@@ -12,20 +12,23 @@ data = json.loads(sys.argv[1].replace('\\', '').replace('\'', ''))
 
 mode = data['mode']
 config = data['config']
-
+# print(config)
 if mode == 'generate':
 
     # Получем зерно для генератора случайных чисел
 
     seed(data['seed'])
 
-    maxval = config["maxval"]
-
+    maxval = int(config["maxval"])
+    gamemode = config["mode"]
     a = randint(0, maxval)
     b = randint(0, maxval)
-
-    question = str(a) + " + " + str(b) + " = ?"
-    answer = str(a + b)
+    if gamemode == 'plus':
+        question = str(a) + " + " + str(b) + " = ?"
+        answer = str(a + b)
+    else:
+        question = str(a) + " - " + str(b) + " = ?"
+        answer = str(a - b)
     print(json.dumps({'question': question, 'answer': answer}))
 
 elif mode == 'check':

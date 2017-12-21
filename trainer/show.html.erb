@@ -1,6 +1,12 @@
-<form action="/check" accept-charset="UTF-8" method="post">
-<font size="20"><%= @task['question'] %></font>
-<br>
-<input size="10" type="number" class="form-control" id="user_answer" name="user_answer"><br>
-<input type="submit" name="commit" value="Ответить" class="btn" data-disable-with="Ответить" />
+<form accept-charset="UTF-8" action="/check" method="post">
+    <font size="20">
+        <%= @task['question'] %>
+    </font>
+    <br>
+        <input class="form-control" id="user_answer" name="user_answer" size="10" type="number">
+            <br>
+                <input class="btn" data-disable-with="Ответить" name="commit" type="submit" value="Ответить"/>
+            </br>
+        </input>
+    </br>
 </form>

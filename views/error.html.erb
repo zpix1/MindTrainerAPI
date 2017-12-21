@@ -37,7 +37,9 @@
                 <% elsif @error[:type] == 'files' %>
                 <p>Один из необходимых для работы тренажера файлов не найден. Файл - <%= @error[:file] %>.<br>Возможно, вы назвали его по-другому или расположили в другом месте.</p>
                 <% elsif @error[:type] == 'json_error' %>
-                <p>Ошибка в формате json. Помните, что json должен иметь ключи question и answer.<br><textarea cols="60" readonly="" rows="10"><%= @error[:json] %></textarea>
+                <p>Ошибка в формате json при запросе задачи. Помните, что json должен иметь ключи 'question' и 'answer'.<br><textarea cols="60" readonly="" rows="10"><%= @error[:json] %></textarea>
+                <% elsif @error[:type] == 'config_error' %>
+                <p>Ошибка в файле config.json. Помните, что json должен иметь ключи 'command' и 'config_template'.<br> Текущее содержание файла:<br><textarea cols="60" readonly="" rows="20"><%= @error[:json] %></textarea>
                 <% end %>
             </div>
             <br>

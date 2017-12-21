@@ -4,9 +4,10 @@ require 'byebug'
 require 'open3'
 enable :sessions # Включаем cookies
 
+# Этот код писался на коленке за несколько дней до сборов.
+
 # Смотрим файлы
-def checkfiles
-    
+def check_all
     files = ['config.json','show.html.erb','check.html.erb']
     files.each do |f|
         unless File.file?("trainer/#{f}")
@@ -15,17 +16,32 @@ def checkfiles
             return @error
         end
     end
+    begin
+        app_config = JSON.parse(open('trainer/config.json').read())
+    rescue
+        @error = { type: 'config_error', json: app_config}
+        return erb :'error.html'
+    end
+    keys = ['command','config_template']
+    keys.each do |k|
+        unless app_config.has_key?(k)
+            @error = { type: 'config_error', json: JSON.pretty_generate(app_config)}
+            return erb :'error.html'
+        end
+    end
     return false
 end
 
+
 get '/' do # На show
-    if cf = checkfiles()
+    if cf = check_all()
         return erb :'error.html'
     end
     app_config = JSON.parse(open('trainer/config.json').read())
 
     @task = {} # Задаем сид и конфиг задачи
-    @task['config'] = app_config["config"]
+    saves = JSON.parse(open("data/saves.json").read)
+    @task['config'] = saves['config']
     @task['seed'] = rand(1..10000)
     # Генерируем строку для запуска
     @task['mode'] = 'generate'
@@ -54,7 +70,7 @@ get '/' do # На show
 end
 
 post '/check' do # на check
-    checkfiles()
+    check_all()
     app_config = JSON.parse(open('trainer/config.json').read())
     if session[:task].nil?
         @error = {type: 'session'}
@@ -82,3 +98,79 @@ post '/check' do # на check
     end
     # end
 end
+
+get '/settings' do
+    check_all()
+    app_config = JSON.parse(open('trainer/config.json').read())
+    saves = { 'seed'=> rand(10000000), 'config'=> Hash.new(0) }
+
+    if File.file?("data/saves.json")
+        # byebug
+        saves = JSON.parse(open("data/saves.json").read)
+    end
+    @pars = app_config['config_template'].map{|p|trainer_param(p,saves['config'])}
+    # open("data/saves.json",'w').write(JSON.pretty_generate(saves))
+    erb :'settings.html'
+end
+
+
+post '/settings' do
+    check_all()
+    app_config = JSON.parse(open('trainer/config.json').read())
+    saves = { 'seed' => rand(10000000), 'config' => Hash.new(0) }
+    if File.file?("data/saves.json")
+        saves = JSON.parse(open("data/saves.json").read)
+    end
+
+    # byebug
+    params['config'].each do |k,v|
+        saves['config'][k] = v
+    end
+    @pars = app_config['config_template'].map{|p|trainer_param(p,saves['config'])}
+    @done = true
+    f = open("data/saves.json",'w');f.write(JSON.pretty_generate(saves));f.close
+    erb :'settings.html'
+end
+
+def trainer_param(param, config)
+    param_nick = param['nick']
+    param_type = param['type']
+    # byebug
+    ans = "<label>#{param['description']}</label>"
+    if param_type == 'int'
+      ans += "<input type='number' name='config[#{param_nick}]' value='#{config[param_nick]}' min=#{param['min']} max=#{param['max']}></input>"
+
+    # # byebug
+    # elsif param_type == 'string'
+    #   ans += text_field_tag("config[#{param_nick}]", config[param_nick], class: 'trainer_param')
+    # elsif param_type == 'bool'
+    #   ans += checkbox_tag("config[#{param_nick}]", config[param_nick], class: 'trainer_param')
+    elsif param_type == 'select'
+      ans += "<select name=config[#{param_nick}]>"
+      ans += param['options'].map{|e| e['nick'] != config[param_nick] ? "<option value='#{e["nick"]}'>#{e["name"]}</option>" : "<option selected value='#{e["nick"]}'>#{e["name"]}</option>"}.join
+      ans += "</select>"
+      # ans += select("config","#{param_nick}", param['options'].map{|e| [e["name"],e["nick"]]}, {class: 'trainer_param', selected: config[param_nick]}, class: 'trainer_param')
+    elsif param_type == 'int_table'
+      height = param[:height]
+      width = param[:width]
+
+      ans += "<table id='#{param_nick}' class='trainer_param'>".html_safe
+      height.times do |i|
+        ans += '<tr>'.html_safe
+        width.times do |j|
+          ans += '<td>'.html_safe
+          if config[param_nick]
+            ans += number_field_tag("config[#{param_nick}][#{i}#{j}]", config[param_nick][i][j], min: param['min'], max: param[:max])
+          else
+            ans += number_field_tag("config[#{param_nick}][#{i}#{j}]", 0, min: param[:min], max: param[:max])
+          end
+          ans += '</td>'.html_safe
+        end
+        ans += '</tr>'.html_safe
+      end
+      ans += '</table>'.html_safe
+    end
+
+    # byebug
+    ans
+  end
