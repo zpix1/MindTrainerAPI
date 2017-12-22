@@ -3,10 +3,8 @@
         <%= @task['question'] %>
     </font>
     <br>
-        <input class="form-control" id="user_answer" name="user_answer" size="10" type="number">
-            <br>
-                <input class="btn" data-disable-with="Ответить" name="commit" type="submit" value="Ответить"/>
-            </br>
-        </input>
+        <input class="form-control" id="user_answer" max="100000" min="-100000" name="user_answer" size="10" type="number" required="required" >
+            <br><input class="btn" data-disable-with="Ответить" name="commit" type="submit" value="Ответить"/>
+        </input><br
     </br>
 </form>
