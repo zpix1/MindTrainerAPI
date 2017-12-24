@@ -1,0 +1,76 @@
+<p>
+    Выберите дроби так, чтобы их сумма была наиболее близка к еденице
+</p>
+<style type="text/css">
+.frac { display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    letter-spacing: 0.001em;
+    text-align: center;
+    font-size: 30px;
+}
+.frac > span {
+    display: block;
+    padding: 0.1em;
+}
+.frac span.bottom {
+    border-top: thin solid black;
+}
+.frac span.symbol {
+    display: none;
+}
+.fflex{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+</style>
+<form accept-charset="UTF-8" action="/check" method="post">
+    <input hidden="" id="jsOutput" name="user_answer">
+        <input class="btn" data-disable-with="Ответить" name="commit" type="submit" value="Ответить"/>
+    </input>
+</form>
+<br>
+<div class="well">
+    <font id="calculator" size="30">
+    </font>
+</div>
+<div class="fflex">
+    <% @task['question']['vals'].each_with_index do |v,id| %>
+    <button class="btn btn-secondary" type="button" onclick="fractionClick(parseInt(this.children[0].children[2].innerHTML),this.checked, <%= id %>); this.checked = !this.checked; this.className = this.checked ? 'btn btn-success' : 'btn btn-secondary';">
+        <div class="frac">
+            <span>
+                <%= v[0] %>
+            </span>
+            <span class="symbol">
+                /
+            </span>
+            <span class="bottom">
+                <%= v[1] %>
+            </span>
+        </div>
+    </button>
+    <% end %>
+</div>
+<script type="text/javascript">
+    //!TODO Убрать фокусы с кнопок, сделать дизайн лучше, сделать код покрасивей и убрать баги с погрешностью
+    var calcValue = 0;
+    used = new Set;
+    function fractionClick(val, mode, id) {
+        if (!mode){
+            used.add(id);
+            calcValue += 1/val;
+        } else {
+            used.delete(id);
+            calcValue -= 1/val;
+        }
+        // Костыли против накопления погрешности
+        calcValue = parseFloat(calcValue.toFixed(6));
+        if (calcValue < 0) calcValue = 0;
+        $("#calculator").text(calcValue.toFixed(3));
+        $("#jsOutput").val(JSON.stringify(Array.from(used)));
+    }
+
+    $("#calculator").text(calcValue.toFixed(3));
+</script>

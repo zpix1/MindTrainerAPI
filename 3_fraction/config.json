@@ -1,0 +1,19 @@
+{
+    "command": "python task.py", // Команда для запуска ядра.
+    "config_template": [ // Шаблон настроек
+        {
+            "nick": "vals_count",
+            "type": "int",
+            "min": 0,
+            "max": 9000,
+            "description": "Количество дробей"
+        },
+        {
+            "nick": "max_size",
+            "type": "int",
+            "min": 2,
+            "max": 9000,
+            "description": "Максимальный знаменатель дроби"
+        }
+    ]
+}

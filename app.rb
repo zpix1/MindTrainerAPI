@@ -5,7 +5,7 @@ require 'open3'
 enable :sessions
 
 # Этот код писался на коленке за несколько дней до сборов.
-TRAINER_DIR = '1_game'
+TRAINER_DIR = 'trainer'
 
 def check_all
     files = ['config.json','show.html.erb','check.html.erb']
