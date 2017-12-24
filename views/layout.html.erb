@@ -7,6 +7,10 @@
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
         <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         </link>
+        <script src="/vendor/jquery.min.js">
+        </script>
+        <script src="/vendor/bootstrap/js/bootstrap.min.js">
+        </script>
     </head>
     <body>
         <%= erb :'header.html' %>
@@ -29,14 +33,11 @@
                     До следующего уровня осталось: 4
                 </div>
             </div>
-            <div class="well text-center" id='twall'>
+            <div class="well text-center" id="twall">
                 <%= yield %>
             </div>
             <br>
             </br>
         </div>
-        <script src="/vendor/jquery.min.js"></script>
-
-         <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
     </body>
 </html>

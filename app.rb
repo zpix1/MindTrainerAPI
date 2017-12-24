@@ -5,19 +5,19 @@ require 'open3'
 enable :sessions
 
 # Этот код писался на коленке за несколько дней до сборов.
-
+TRAINER_DIR = '1_game'
 
 def check_all
     files = ['config.json','show.html.erb','check.html.erb']
     files.each do |f|
-        unless File.file?("trainer/#{f}")
+        unless File.file?("#{TRAINER_DIR}/#{f}")
             @error = { file: f, type: 'files'}
             erb :'error.html'
             return @error
         end
     end
     begin
-        app_config = JSON.parse(open('trainer/config.json').read())
+        app_config = JSON.parse(open("#{TRAINER_DIR}/config.json").read())
     rescue
         @error = { type: 'config_error', json: app_config}
         return erb :'error.html'
@@ -45,7 +45,7 @@ get '/' do
     if cf = check_all()
         return erb :'error.html'
     end
-    app_config = JSON.parse(open('trainer/config.json').read())
+    app_config = JSON.parse(open("#{TRAINER_DIR}/config.json").read())
 
     @task = {}
 
@@ -55,7 +55,7 @@ get '/' do
     @task['seed'] = rand(1..10000).to_s
 
     @task['mode'] = 'generate'
-    cmd = "cd trainer && #{app_config['command']} #{JSON.generate(@task).dump}"
+    cmd = "cd #{TRAINER_DIR} && #{app_config['command']} #{JSON.generate(@task).dump}"
     print(cmd)
     ans, stderr, status = Open3.capture3(cmd)
 
@@ -75,12 +75,12 @@ get '/' do
     @task['answer'] = result['answer']
 
     session[:task] = JSON.generate @task
-    erb :'../trainer/show.html', layout: :'layout.html'
+    erb :"../#{TRAINER_DIR}/show.html", layout: :'layout.html'
 end
 
 post '/check' do # на check
     check_all()
-    app_config = JSON.parse(open('trainer/config.json').read())
+    app_config = JSON.parse(open("#{TRAINER_DIR}/config.json").read())
     if session[:task].nil?
         @error = {type: 'session'}
         return erb :'error.html'
@@ -88,7 +88,8 @@ post '/check' do # на check
     @task = JSON.parse session[:task]
     @task['mode'] = 'check'
     @task['user_answer'] = params['user_answer']
-    cmd = "cd trainer && #{app_config['command']} #{JSON.generate(@task).dump}"
+
+    cmd = "cd #{TRAINER_DIR} && #{app_config['command']} #{JSON.generate(@task).dump}"
 
 
     ans, stderr, status = Open3.capture3(cmd)
@@ -99,7 +100,7 @@ post '/check' do # на check
         erb :'error.html'
     else
         if ans.chomp == 'false'
-            erb :'../trainer/check.html', layout: :'layout.html'
+            erb :"../#{TRAINER_DIR}/check.html", layout: :'layout.html'
         else
             redirect to('/')
         end
@@ -109,7 +110,7 @@ end
 
 get '/settings' do
     check_all()
-    app_config = JSON.parse(open('trainer/config.json').read())
+    app_config = JSON.parse(open("#{TRAINER_DIR}/config.json").read())
     saves = get_saves(app_config['config_template'])
     @pars = app_config['config_template'].map{|p|trainer_param(p,saves['config'])}
     # open("data/saves.json",'w').write(JSON.pretty_generate(saves))
@@ -119,7 +120,7 @@ end
 
 post '/settings' do
     check_all()
-    app_config = JSON.parse(open('trainer/config.json').read())
+    app_config = JSON.parse(open("#{TRAINER_DIR}/config.json").read())
     saves = get_saves(app_config['config_template'])
 
     # byebug

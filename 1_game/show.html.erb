@@ -1,0 +1,80 @@
+<p>Играйте с компьютером</p>
+
+<form accept-charset="UTF-8" action="/check" method="post">
+    <input hidden name="user_answer" id="jsOutput">
+    <input class="btn" data-disable-with="Ответить" name="commit" type="submit" value="Ответить"/>
+    <input class="btn" type='button' value="Очистить" onclick='resetGame()'/>
+</form>
+<br>
+<div class="row">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-4 well">
+        <font size=30 id='heapSize'>
+        </font>
+    </div>
+    <div class="col-md-4">
+    </div>
+</div>
+<div class="well"><p id='protocol'></p></div>
+<div class="row">
+    <% @task['question']['vals'].each do |v| %>
+    <div class="col-md-4">
+        <button class="btn btn-secondary btn-lg btn-block" type="button" onclick="userStep(this.innerHTML);">
+            <%= v %>
+        </button>
+    </div>
+    <% end %>
+</div>
+<script type="text/javascript">
+    //!TODO Блочить кнопки при конце игры, обработать проигрыш юзера, записывать протокол в jsOutput, придумать компу стратегию.
+
+    var vals = <%= JSON.generate(@task['question']['vals']) %>;
+    var heapSize = NaN;
+    var protocol = [];
+
+    function resetGame(){
+        heapSize = <%= @task['question']['heap_size'] %>;
+        protocol = [{type:'message', message: 'Начало игры, размер кучи - ' + heapSize}];;
+        update();
+    }
+
+    function update(){
+        $('#heapSize').text(heapSize);
+        $('#protocol').html(encodeProtocol(protocol));
+    }
+
+    // Обработка и выполнение хода
+    function makeStep(value, person){
+        if (heapSize - value < 0) {
+            protocol.push({type:'message', message: 'Конец игры, ' + person + ' проиграл.'});
+        } else {
+            heapSize -= value;
+            protocol.push({type:'step',person: person, amount: value, rest: heapSize});
+        }
+        update();
+    }
+    // Сделать протокол (массив объектов) читаемым текстом.
+    function encodeProtocol(protocol){
+        var ans = '';
+        for (var i=0; i<protocol.length; i++){
+            if (protocol[i].type == 'step')
+                ans += protocol[i].person + ' взял ' + protocol[i].amount + ' камень, осталось ' + protocol[i].rest + ' камней <br>';
+            else if (protocol[i].type == 'message')
+                ans += protocol[i].message + '<br>';
+        }
+        return ans;
+    }
+
+    function pcStep(){
+        makeStep(vals[Math.floor(Math.random() * vals.length)], 'pc');
+    }
+
+    function userStep(value){
+        makeStep(value, 'user');
+        pcStep();
+    }
+
+    resetGame();
+
+</script>
