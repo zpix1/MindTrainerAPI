@@ -1,6 +1,6 @@
 require 'sinatra'
 require 'json'
-require 'byebug'
+# require 'byebug'
 require 'open3'
 enable :sessions
 
@@ -55,7 +55,7 @@ get '/' do
     @task['seed'] = rand(1..10000).to_s
 
     @task['mode'] = 'generate'
-    cmd = "cd trainer; #{app_config['command']} '#{JSON.generate(@task)}'"
+    cmd = "cd trainer && #{app_config['command']} #{JSON.generate(@task).dump}"
     print(cmd)
     ans, stderr, status = Open3.capture3(cmd)
 
@@ -88,7 +88,7 @@ post '/check' do # на check
     @task = JSON.parse session[:task]
     @task['mode'] = 'check'
     @task['user_answer'] = params['user_answer']
-    cmd = "cd trainer; #{app_config['command']} '#{JSON.generate(@task)}'"
+    cmd = "cd trainer && #{app_config['command']} #{JSON.generate(@task).dump}"
 
 
     ans, stderr, status = Open3.capture3(cmd)
