@@ -10,6 +10,7 @@ using namespace std;
 
 int main(int argc, char* argv[]){
     // Распарсить строку в объект
+    // cout << argv[1] << endl;
     auto data = json::parse(argv[1]);
     // data["mode"].get<string>() - отдай по ключу mode значение типа string
     if (data["mode"].get<string>() == "generate"){

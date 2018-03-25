@@ -142,8 +142,8 @@ def trainer_param(param, config)
       ans += "<input type='number' name='config[#{param_nick}]' value='#{config[param_nick]}' min=#{param['min']} max=#{param['max']}></input>"
 
     # # byebug
-    # elsif param_type == 'string'
-    #   ans += text_field_tag("config[#{param_nick}]", config[param_nick], class: 'trainer_param')
+    elsif param_type == 'string'
+      ans += "<input type='text' name='config[#{param_nick}]' value='#{config[param_nick]}'></input>"
     # elsif param_type == 'bool'
     #   ans += checkbox_tag("config[#{param_nick}]", config[param_nick], class: 'trainer_param')
     elsif param_type == 'select'

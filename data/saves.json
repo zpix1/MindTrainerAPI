@@ -1,7 +1,8 @@
 {
-  "seed": "8879049",
+  "seed": "3831030",
   "config": {
-    "vals_count": "11",
-    "max_size": "123"
+    "maxval1": "15",
+    "maxval2": "kkkllklk",
+    "mode": "plus"
   }
 }

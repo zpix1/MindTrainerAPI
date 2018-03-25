@@ -10,7 +10,7 @@
         },
         {
             "nick": "maxval2",
-            "type": "int",
+            "type": "string",
             "min": 0,
             "max": 900,
             "description": "Максимальное значение цифры 2"
