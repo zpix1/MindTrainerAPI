@@ -5,22 +5,22 @@
             Settings
         </title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-        <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        </link>
+        <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
     </head>
     <body>
         <%= erb :'header.html' %>
         <div class="container">
+            <% if @done %>
+                <div class="alert alert-success">
+                    Сохранено!
+                </div>
+            <% end %>
             <div class="well text-center" id="twall">
-                <% if @done %>
-                <h1>Сохранено!</h1>
-                <% end %>
-                <form accept-charset="UTF-8" action="/settings" method="post">
+                <form accept-charset="UTF-8" action="/settings" method="post" class="form-inline">
                     <%= @pars.join "<br>" %>
+                    <br><br>
+                        <input class="btn btn-default" data-disable-with="Сохранить" name="commit" type="submit" value="Сохранить"/>
                     <br>
-                                <input class="btn" data-disable-with="Сохранить" name="commit" type="submit" value="Сохранить"/>
-                        </input>
-                    </br>
                 </form>
                 
             </div>

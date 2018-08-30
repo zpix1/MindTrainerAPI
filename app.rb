@@ -137,21 +137,22 @@ def trainer_param(param, config)
     param_nick = param['nick']
     param_type = param['type']
     # byebug
-    ans = "<label>#{param['description']}</label>"
+    ans = "<div class='form-group'><label class='control-label'for='config[#{param_nick}]'>#{param['description']}:</label>"
     if param_type == 'int'
-      ans += "<input type='number' name='config[#{param_nick}]' value='#{config[param_nick]}' min=#{param['min']} max=#{param['max']}></input>"
+      ans += "<input type='number' class='form-control' name='config[#{param_nick}]' value='#{config[param_nick]}' min=#{param['min']} max=#{param['max']}/>"
 
     # # byebug
     elsif param_type == 'string'
-      ans += "<input type='text' name='config[#{param_nick}]' value='#{config[param_nick]}'></input>"
+      ans += "<input type='text' class='form-control' name='config[#{param_nick}]' value='#{config[param_nick]}'/>"
     # elsif param_type == 'bool'
     #   ans += checkbox_tag("config[#{param_nick}]", config[param_nick], class: 'trainer_param')
     elsif param_type == 'select'
-      ans += "<select name=config[#{param_nick}]>"
+      ans += "<select class='form-control' name=config[#{param_nick}]>"
       ans += param['options'].map{|e| e['nick'] != config[param_nick] ? "<option value='#{e["nick"]}'>#{e["name"]}</option>" : "<option selected value='#{e["nick"]}'>#{e["name"]}</option>"}.join
       ans += "</select>"
       # ans += select("config","#{param_nick}", param['options'].map{|e| [e["name"],e["nick"]]}, {class: 'trainer_param', selected: config[param_nick]}, class: 'trainer_param')
     end
+    ans += '</div>'
     # elsif param_type == 'int_table'
     #   height = param[:height]
     #   width = param[:width]

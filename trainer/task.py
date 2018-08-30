@@ -18,11 +18,11 @@ if mode == 'generate':
     # Получем зерно для генератора случайных чисел
 
     seed(data['seed'])
-
-    maxval = int(config["maxval1"])
+    maxval1 = int(config["maxval1"])
+    maxval2 = int(config["maxval2"])
     gamemode = config["mode"]
-    a = randint(0, maxval)
-    b = randint(0, maxval)
+    a = randint(0, maxval1)
+    b = randint(0, maxval2)
     if gamemode == 'plus':
         question = str(a) + " + " + str(b) + " = ?"
         answer = str(a + b)

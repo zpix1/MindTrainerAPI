@@ -1,5 +1,5 @@
 {
-    "command": "./a.out", // Команда для запуска ядра.
+    "command": "python task.py", // Команда для запуска ядра.
     "config_template": [ // Шаблон настроек
         {
             "nick": "maxval1",
@@ -10,7 +10,7 @@
         },
         {
             "nick": "maxval2",
-            "type": "string",
+            "type": "int",
             "min": 0,
             "max": 900,
             "description": "Максимальное значение цифры 2"
