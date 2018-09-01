@@ -139,11 +139,11 @@ def trainer_param(param, config)
     # byebug
     ans = "<div class='form-group'><label class='control-label'for='config[#{param_nick}]'>#{param['description']}:</label>"
     if param_type == 'int'
-      ans += "<input type='number' class='form-control' name='config[#{param_nick}]' value='#{config[param_nick]}' min=#{param['min']} max=#{param['max']}/>"
+      ans += "<input type='number' class='form-control' name='config[#{param_nick}]' value='#{config[param_nick]}' min=#{param['min']} max=#{param['max']} />"
 
     # # byebug
     elsif param_type == 'string'
-      ans += "<input type='text' class='form-control' name='config[#{param_nick}]' value='#{config[param_nick]}'/>"
+      ans += "<input type='text' class='form-control' name='config[#{param_nick}]' value='#{config[param_nick]}' />"
     # elsif param_type == 'bool'
     #   ans += checkbox_tag("config[#{param_nick}]", config[param_nick], class: 'trainer_param')
     elsif param_type == 'select'
