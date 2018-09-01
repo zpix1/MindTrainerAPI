@@ -56,7 +56,7 @@ get '/' do
 
     @task['mode'] = 'generate'
     cmd = "cd #{TRAINER_DIR} && #{app_config['command']} #{JSON.generate(@task).dump}"
-    print(cmd)
+    puts("GET REQ: #{cmd}")
     ans, stderr, status = Open3.capture3(cmd)
 
     begin
@@ -90,7 +90,7 @@ post '/check' do # на check
     @task['user_answer'] = params['user_answer']
 
     cmd = "cd #{TRAINER_DIR} && #{app_config['command']} #{JSON.generate(@task).dump}"
-
+    puts("POST REQ: #{cmd}")
 
     ans, stderr, status = Open3.capture3(cmd)
     begin
